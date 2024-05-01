@@ -7,11 +7,11 @@
 // 5.如果不调用resolve此时promise不会成功也不会失败 （如果发生异常也会认为是失败）
 // 6.resolve之后 不能reject 相反也是
 // 7.executor是立刻执行的
-// const Promise = require('./promise')
+const Promise = require('./05.promise')
 const promise = new Promise((resolve, reject) => {
     setTimeout(() => {
         reject('ok')
-    }, 100000)
+    }, 1000)
 })
 promise.then((value) => {
     console.log('成功1', value)
