@@ -49,6 +49,11 @@ class Promise {
         this.onRejectedCallbacks = [];
         const resolve = (value) => {
             if (this.status === PENDING) {
+                // 为了满足ECMAScript的功能自己额外的添加
+                if (value instanceof Promise) {
+                    return value.then(resolve, reject)
+                }
+
                 this.value = value;
                 this.status = FULFILLED
                 this.onResolveCallbacks.forEach(fn => fn())
@@ -68,13 +73,7 @@ class Promise {
         }
 
     }
-    // promise的链式调用的
-    // 1）返回的是一个普通值（非promise的值）这个值会被传到外层then的下一个then的成功中去
-    // 2) 没有返回值（抛错了），会执行外层的then的下一个then的失败
-    // 3) 返回的是promise ，会去解析返回的promise将解析后的值，传递到成功或者失败中（看这个promise是什么状态）
-    // 什么时候会失败 （抛错走下一次的失败，返回的是失败的promise会走失败，其它都是成功的）
-    // 链式调用一般情况需要返回的是this  $().css().html()
-    // promise为了能扭转状态 而且还要保证promise状态变化后不可以更改。 返回一个全新的promise
+
     then(onFulfilled, onRejected) {
         // then方法中如果没有传递参数 那么可以透传到下一个then中
         onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : v => v;
@@ -128,7 +127,65 @@ class Promise {
         })
         return promise2
     }
+
+    catch(fn) { // 针对失败做处理，成功无视
+        this.then(null,fn)
+    }
 }
+
+
+// Promise.resolve 是ECMAScript自己实现的(为了能快速创建promise并且具备等待效果) 
+// 我们参考的是promise A+ 规范实现的。 
+// Promise.resolve 有一个特点就是会产生一个新的promise， 如果你传入的值是一个promise?
+// Promise.resolve 可以解析传入的promise 具备等待效果
+Promise.resolve = function(value){
+    return new Promise((resolve, reject) => {
+        resolve(value)
+    })
+}
+
+Promise.reject = function (reason) { 
+    return new Promise((resolve, reject) => {
+        reject(reason)
+    })
+}
+
+Promise.all = function (values) {
+    return new Promise((resolve, reject) => {
+        let idx = 0 
+        let results = []
+        values.forEach((item,i) => {
+            Promise.resolve(item).then(val=>{
+                results[i] = val;
+                if(results.length === ++idx){
+                    resolve(results)
+                }
+            }) 
+        }, reject);
+    })
+}
+
+Promise.race = function (values) {
+    return new Promise((resolve, reject) => {
+        values.forEach((item, i) => {
+            Promise.resolve(item).then(val => {
+                resolve(val)
+            })
+        }, reject);
+    })
+}
+
+// 无论成功和失败都要执行的逻辑 
+Promise.prototype.finally = function (fn) {
+    return this.then((val) => {
+        // Promise.resolve 具备一个功能，就是可以解析传入的promise
+        return Promise.resolve(fn()).then(() => val)
+    }, (r) => {
+        return Promise.resolve(fn()).then(() => { throw r })
+    })
+}
+
+
 Promise.deferred = function () {
     const dfd = {}
     dfd.promise = new Promise((resolve, reject) => {
