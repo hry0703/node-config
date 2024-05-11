@@ -85,3 +85,6 @@ console.log(code[57] + code[27] + code[34] + code[5]); // 5biF
 // 一个汉字三个字节 
 console.log(Buffer.from('帅'))
 console.log(Buffer.from('5BIF')) // base64不能转化大文件
+
+
+// 实现 base64 base32 base16
