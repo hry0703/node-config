@@ -63,6 +63,7 @@ function* readResult() { // 依旧是异步的方法，只是看起来像同步�
     let age = yield fs.readFile(path.resolve(__dirname, filename), 'utf8');
     return age;
 }
+
 // let { value, done } = it.next();
 // value.then(data => {
 //     let { value, done } = it.next(data);

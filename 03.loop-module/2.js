@@ -42,18 +42,18 @@ const r = `function () {
 
 // 1) 如何读取文件  path (采用的是绝对路径)
 const path = require('path');
-const fs = require('fs')
+// const fs = require('fs')
 // __filename
 // __dirname
 console.log(path.join(__dirname, 'a', 'b', '/')) // 只是拼接
-console.log(path.resolve('a', 'b', '/a')); // resolve会解析出一个绝对路径来 (resolve会以当前执行路径作为解析路径)
+console.log(path.resolve('a', 'b')); // resolve会解析出一个绝对路径来 (resolve会以当前执行路径作为解析路径)
 // join !== resolve 在一定的场景下join和resolve没有区别. 遇到/的时候只能用join 不能用resolve
-console.log(path.extname('a.min.js')); // 获取扩展名
+// console.log(path.extname('a.min.js')); // 获取扩展名
 // 读取文件文件不存在会发生异常
-const result = fs.readFileSync(path.resolve(__dirname, 'test.md'), 'utf8')
-console.log(fs.existsSync(path.resolve(__dirname, 'tes1t.md')))
+// const result = fs.readFileSync(path.resolve(__dirname, 'test.md'), 'utf8')
+// console.log(fs.existsSync(path.resolve(__dirname, 'tes1t.md')))
 
 // eval 隔离效果，性能差
 // new Function
-const vm = require('vm');
-vm.runInThisContext('console.log(a)'); // 沙箱就是一个干净的不受外界影响的盒子
+// const vm = require('vm');
+// vm.runInThisContext('console.log(a)'); // 沙箱就是一个干净的不受外界影响的盒子

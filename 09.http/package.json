@@ -1,0 +1,25 @@
+{
+  "name": "9.http",
+  "version": "1.0.0",
+  "description": "",
+  "main": "1.http.js",
+  "type": "module",
+  "bin": {
+    "jw-server": "./bin/www.js"
+  },
+  "scripts": {
+    "dev": "cross-env PORT=3000  nodemon 1.http.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^11.0.0",
+    "cross-env": "^7.0.3",
+    "ejs": "^3.1.9",
+    "mime": "^3.0.0",
+    "moment": "^2.29.4",
+    "nodemon": "^2.0.22"
+  }
+}
